@@ -30,4 +30,4 @@ Este é um sistema completo de ponta a ponta desenvolvido para o setor metalúrg
 
 1. Clone este repositório:
    ```bash
-   git clone [https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git](https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git)
+   git clone [https://github.com/DevFullFelps/py_cadastro_metal](https://github.com/DevFullFelps/py_cadastro_metal)
