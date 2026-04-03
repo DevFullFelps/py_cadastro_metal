@@ -2,6 +2,9 @@
 
 Este é um sistema completo de ponta a ponta desenvolvido para o setor metalúrgico. Ele permite o cadastro seguro de materiais recebidos e gera análises visuais interativas em tempo real sobre o estoque e fornecedores.
 
+## 🌐 Link do Projeto em Produção
+* O projeto pode ser visualizado online no Render: **[https://cadastro-metalurgica.onrender.com/](https://cadastro-metalurgica.onrender.com/)**
+
 ---
 
 ## 🚀 Funcionalidades
