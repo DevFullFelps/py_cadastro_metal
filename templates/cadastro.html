@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Metalúrgica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Cadastro de Matéria-Prima</h3>
+                    </div>
+                    <div class="card-body">
+                        <form action="/cadastrar" method="POST">
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Material:</label>
+                                    <select name="material" class="form-select" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="Aço Carbono">Aço Carbono</option>
+                                        <option value="Alumínio">Alumínio</option>
+                                        <option value="Latão">Latão</option>
+                                        <option value="Inox">Inox</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Peso (Kg):</label>
+                                    <input type="number" name="peso" step="0.01" min="0" class="form-control"
+                                        placeholder="0.00" required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Fornecedor:</label>
+                                    <select name="fornecedor" class="form-select" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="Alumass">Alumass</option>
+                                        <option value="Metalnox">Metalnox</option>
+                                        <option value="SNK">SNK</option>
+                                        <option value="Latumi">Latumi</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Data de Entrada:</label>
+                                    <input type="date" name="data" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Número da Corrida:</label>
+                                <input type="text" name="corrida" class="form-control" placeholder="Ex: ABC1234"
+                                    required>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Cadastrar Material</button>
+                                <a href="/dashboard" class="btn btn-outline-secondary">Ver Dashboard de Gráficos</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card mt-4 shadow">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="mb-0">Materiais Cadastrados</h4>
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#modalExcluir">
+                            🗑️ Excluir Registro
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Material</th>
+                                        <th>Peso (Kg)</th>
+                                        <th>Fornecedor</th>
+                                        <th>Data</th>
+                                        <th>Corrida</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in materiais %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.material }}</td>
+                                        <td>{{ item.peso }}</td>
+                                        <td>{{ item.fornecedor }}</td>
+                                        <td>{{ item.data_entrada }}</td>
+                                        <td>{{ item.corrida }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="modal fade" id="modalExcluir" tabindex="-1" aria-labelledby="modalExcluirLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalExcluirLabel">Excluir Registro (Área do Gerente)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/deletar" method="POST">
+                    <div class="modal-body">
+
+                        <div id="etapa1">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">1. Digite o ID do Registro:</label>
+                                <input type="number" id="inputID" name="id_registro" class="form-control"
+                                    placeholder="Ex: 5" required>
+                            </div>
+                            <div id="erroBusca" class="alert alert-danger d-none">
+                                ❌ Registro não encontrado! Digite um ID válido.
+                            </div>
+                            <div class="d-grid">
+                                <button type="button" class="btn btn-primary" onclick="avancarParaEtapa2()">Avançar (Ver
+                                    Dados)</button>
+                            </div>
+                        </div>
+
+                        <div id="etapa2" class="d-none">
+                            <div class="alert alert-secondary">
+                                <h6 class="fw-bold">📋 Detalhes do Registro Encontrado:</h6>
+                                <p class="mb-1"><strong>Material:</strong> <span id="detalheMaterial"></span></p>
+                                <p class="mb-1"><strong>Peso:</strong> <span id="detalhePeso"></span> Kg</p>
+                                <p class="mb-1"><strong>Fornecedor:</strong> <span id="detalheFornecedor"></span></p>
+                                <p class="mb-1"><strong>Data:</strong> <span id="detalheData"></span></p>
+                                <p class="mb-0"><strong>Corrida:</strong> <span id="detalheCorrida"></span></p>
+                            </div>
+                            <div class="alert alert-warning" role="alert">
+                                ⚠️ **Atenção:** Esta ação é irreversível!
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-danger" onclick="avancarParaEtapa3()">Confirmar
+                                    Exclusão</button>
+                                <button type="button" class="btn btn-outline-secondary"
+                                    onclick="voltarParaEtapa1()">Voltar</button>
+                            </div>
+                        </div>
+
+                        <div id="etapa3" class="d-none">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">🔑 Chave de Acesso do Gerente:</label>
+                                <input type="password" name="chave_gerente" class="form-control"
+                                    placeholder="Digite a senha do gerente" required>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-danger">Finalizar e Excluir</button>
+                                <button type="button" class="btn btn-outline-secondary"
+                                    onclick="voltarParaEtapa2()">Voltar</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const etapa1 = document.getElementById('etapa1');
+        const etapa2 = document.getElementById('etapa2');
+        const etapa3 = document.getElementById('etapa3');
+        const erroBusca = document.getElementById('erroBusca');
+
+        function avancarParaEtapa2() {
+            const id = document.getElementById('inputID').value;
+
+            if (!id) {
+                alert("Por favor, digite um ID!");
+                return;
+            }
+
+            fetch(`/buscar_registro/${id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Não encontrado');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('detalheMaterial').innerText = data.material;
+                    document.getElementById('detalhePeso').innerText = data.peso;
+                    document.getElementById('detalheFornecedor').innerText = data.fornecedor;
+                    document.getElementById('detalheData').innerText = data.data;
+                    document.getElementById('detalheCorrida').innerText = data.corrida;
+
+                    etapa1.classList.add('d-none');
+                    etapa2.classList.remove('d-none');
+                    erroBusca.classList.add('d-none');
+                })
+                .catch(error => {
+                    erroBusca.classList.remove('d-none');
+                });
+        }
+
+        function avancarParaEtapa3() {
+            etapa2.classList.add('d-none');
+            etapa3.classList.remove('d-none');
+        }
+
+        function voltarParaEtapa1() {
+            etapa2.classList.add('d-none');
+            etapa1.classList.remove('d-none');
+        }
+
+        function voltarParaEtapa2() {
+            etapa3.classList.add('d-none');
+            etapa2.classList.remove('d-none');
+        }
+    </script>
+</body>
+
+</html>
